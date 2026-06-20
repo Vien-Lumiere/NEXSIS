@@ -1,18 +1,21 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
-const admin = require('firebase-admin');
+const { initializeApp, cert } = require('firebase-admin/app');
+const { getMessaging } = require('firebase-admin/messaging');
 const path = require('path');
 
 const PORT = process.env.PORT || 5000;
 const FCM_TOPIC = 'nexsis-alerts';
 
 // 1. Initialize Firebase Admin SDK
+let messaging = null;
 try {
   const serviceAccount = require('./firebase-key.json');
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+  const firebaseApp = initializeApp({
+    credential: cert(serviceAccount)
   });
+  messaging = getMessaging(firebaseApp);
   console.log('Firebase Admin SDK initialized successfully.');
 } catch (error) {
   console.error('CRITICAL: Failed to load firebase-key.json or initialize Firebase Admin SDK.');
@@ -124,34 +127,38 @@ function handleEarthquakeEvent(event) {
   console.log(`- Broadcasted via WebSocket to ${wsCount} client(s).`);
 
   // B. Send FCM Push Notification (Background/Locked clients)
-  const fcmMessage = {
-    notification: {
-      title: '⚠ Getaran Terdeteksi',
-      body: `Sensor ${event.sensor} — ${event.receivedAt}`,
-    },
-    topic: FCM_TOPIC,
-    android: {
-      priority: 'high',
+  if (messaging) {
+    const fcmMessage = {
       notification: {
-        sound: 'default',
-        channelId: 'nexsis-alerts', // Matches the client-side channel configuration
+        title: '⚠ Getaran Terdeteksi',
+        body: `Sensor ${event.sensor} — ${event.receivedAt}`,
+      },
+      topic: FCM_TOPIC,
+      android: {
+        priority: 'high',
+        notification: {
+          sound: 'default',
+          channelId: 'nexsis-alerts',
+        }
       }
-    }
-  };
+    };
 
-  admin.messaging().send(fcmMessage)
-    .then((response) => {
-      console.log('- FCM notification broadcast successfully:', response);
-    })
-    .catch((error) => {
-      console.warn('- Failed to send FCM notification:', error.message);
-    });
+    messaging.send(fcmMessage)
+      .then((response) => {
+        console.log('- FCM notification broadcast successfully:', response);
+      })
+      .catch((error) => {
+        console.warn('- Failed to send FCM notification:', error.message);
+      });
+  } else {
+    console.warn('- FCM Messaging is not initialized, skipping notification.');
+  }
 }
 
 // Start Server
 server.listen(PORT, () => {
   console.log(`=================================================`);
-  console.log(`NEXSIS Backend Server running on port ${PORT}`);
+  console.log('NEXSIS Backend Server running on port 5000');
   console.log(`API URL: http://localhost:${PORT}`);
   console.log(`WS URL:  ws://localhost:${PORT}`);
   console.log(`=================================================`);
