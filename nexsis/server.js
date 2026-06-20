@@ -1,0 +1,180 @@
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+const admin = require('firebase-admin');
+const path = require('path');
+
+const PORT = process.env.PORT || 5000;
+const FCM_TOPIC = 'nexsis-alerts';
+
+// 1. Initialize Firebase Admin SDK
+try {
+  const serviceAccount = require('./firebase-key.json');
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+  console.log('Firebase Admin SDK initialized successfully.');
+} catch (error) {
+  console.error('CRITICAL: Failed to load firebase-key.json or initialize Firebase Admin SDK.');
+  console.error('Please make sure firebase-key.json is present in the server root.');
+  console.error(error);
+}
+
+const app = express();
+app.use(express.json());
+
+// Enable CORS
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
+// In-memory earthquake history
+const earthquakeHistory = [
+  {
+    id: 1234567800,
+    status: 'earthquake_detected',
+    sensor: 'SW420-A1',
+    timestamp: new Date(Date.now() - 3600000).toISOString(),
+    receivedAt: formatDate(new Date(Date.now() - 3600000)),
+  },
+  {
+    id: 1234567801,
+    status: 'earthquake_detected',
+    sensor: 'SW420-B2',
+    timestamp: new Date(Date.now() - 7200000).toISOString(),
+    receivedAt: formatDate(new Date(Date.now() - 7200000)),
+  }
+];
+
+function formatDate(date) {
+  const pad = (num) => String(num).padStart(2, '0');
+  const d = pad(date.getDate());
+  const m = pad(date.getMonth() + 1);
+  const y = date.getFullYear();
+  const h = pad(date.getHours());
+  const min = pad(date.getMinutes());
+  const s = pad(date.getSeconds());
+  return `${d}/${m}/${y} ${h}:${min}:${s}`;
+}
+
+// 2. GET /history - Fetch last 10-50 earthquake records
+app.get('/history', (req, res) => {
+  res.json(earthquakeHistory);
+});
+
+// 3. POST /earthquake - Incoming event from ESP8266 or simulated trigger
+app.post('/earthquake', (req, res) => {
+  const body = req.body || {};
+  const newEvent = {
+    id: body.id || Date.now(),
+    status: body.status || 'earthquake_detected',
+    sensor: body.sensor || 'SW420',
+    timestamp: body.timestamp || new Date().toISOString(),
+    receivedAt: formatDate(new Date()),
+  };
+
+  // Add to history
+  earthquakeHistory.unshift(newEvent);
+  if (earthquakeHistory.length > 50) {
+    earthquakeHistory.pop();
+  }
+
+  // Trigger WebSocket and FCM broadcast
+  handleEarthquakeEvent(newEvent);
+
+  res.status(201).json({ ok: true, message: 'Earthquake event processed.', event: newEvent });
+});
+
+// Create HTTP Server
+const server = http.createServer(app);
+
+// 4. WebSocket Server
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  console.log('Client connected to WebSocket.');
+  ws.on('close', () => {
+    console.log('Client disconnected.');
+  });
+});
+
+// Core logic to handle incoming events
+function handleEarthquakeEvent(event) {
+  // A. Broadcast via WebSocket (Foreground clients)
+  const payload = JSON.stringify({
+    type: 'earthquake',
+    data: event,
+  });
+
+  console.log(`\n[EVENT RECEIVED]: Sensor ${event.sensor} at ${event.receivedAt}`);
+  
+  let wsCount = 0;
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(payload);
+      wsCount++;
+    }
+  });
+  console.log(`- Broadcasted via WebSocket to ${wsCount} client(s).`);
+
+  // B. Send FCM Push Notification (Background/Locked clients)
+  const fcmMessage = {
+    notification: {
+      title: '⚠ Getaran Terdeteksi',
+      body: `Sensor ${event.sensor} — ${event.receivedAt}`,
+    },
+    topic: FCM_TOPIC,
+    android: {
+      priority: 'high',
+      notification: {
+        sound: 'default',
+        channelId: 'nexsis-alerts', // Matches the client-side channel configuration
+      }
+    }
+  };
+
+  admin.messaging().send(fcmMessage)
+    .then((response) => {
+      console.log('- FCM notification broadcast successfully:', response);
+    })
+    .catch((error) => {
+      console.warn('- Failed to send FCM notification:', error.message);
+    });
+}
+
+// Start Server
+server.listen(PORT, () => {
+  console.log(`=================================================`);
+  console.log(`NEXSIS Backend Server running on port ${PORT}`);
+  console.log(`API URL: http://localhost:${PORT}`);
+  console.log(`WS URL:  ws://localhost:${PORT}`);
+  console.log(`=================================================`);
+  console.log(`Commands:`);
+  console.log(`- Press [ENTER] key in this terminal to simulate and broadcast a new earthquake alert.`);
+  console.log(`=================================================`);
+});
+
+// Listen to keyboard inputs on stdin to simulate alerts
+process.stdin.setEncoding('utf8');
+process.stdin.on('data', (data) => {
+  if (data.trim() === '') {
+    const mockEvent = {
+      id: Date.now(),
+      status: 'earthquake_detected',
+      sensor: 'SW420-SIM',
+      timestamp: new Date().toISOString(),
+      receivedAt: formatDate(new Date()),
+    };
+    earthquakeHistory.unshift(mockEvent);
+    if (earthquakeHistory.length > 50) {
+      earthquakeHistory.pop();
+    }
+    handleEarthquakeEvent(mockEvent);
+  }
+});
