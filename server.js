@@ -207,21 +207,27 @@ server.listen(PORT, () => {
   console.log(`=================================================`);
 });
 
-// Listen to keyboard inputs on stdin to simulate alerts
-process.stdin.setEncoding('utf8');
-process.stdin.on('data', (data) => {
-  if (data.trim() === '') {
-    const mockEvent = {
-      id: Date.now(),
-      status: 'earthquake_detected',
-      sensor: 'SW420-SIM',
-      timestamp: new Date().toISOString(),
-      receivedAt: formatDate(new Date()),
-    };
-    earthquakeHistory.unshift(mockEvent);
-    if (earthquakeHistory.length > 50) {
-      earthquakeHistory.pop();
+// Listen to keyboard inputs on stdin to simulate alerts (local dev only)
+if (process.stdin.isTTY) {
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', (data) => {
+    if (data.trim() === '') {
+      const mockEvent = {
+        id: Date.now(),
+        status: 'earthquake_detected',
+        sensor: 'SW420-SIM',
+        timestamp: new Date().toISOString(),
+        receivedAt: formatDate(new Date()),
+      };
+      earthquakeHistory.unshift(mockEvent);
+      if (earthquakeHistory.length > 50) {
+        earthquakeHistory.pop();
+      }
+      handleEarthquakeEvent(mockEvent);
     }
-    handleEarthquakeEvent(mockEvent);
-  }
-});
+  });
+  console.log('- Press [ENTER] to simulate a seismic alert.');
+} else {
+  console.log('- Stdin simulation disabled (non-TTY / cloud environment).');
+  console.log(`- POST /earthquake to trigger an event programmatically.`);
+}
