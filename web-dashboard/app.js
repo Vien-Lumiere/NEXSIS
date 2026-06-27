@@ -397,6 +397,26 @@ document.getElementById('modal-save').addEventListener('click', () => {
   closeModal();
   connect();
 });
+// ─── SAFETY GUIDE MODAL ──────────────────────────────────────────────────────
+function openSafetyModal() {
+  document.getElementById('safety-overlay').classList.add('open');
+}
+function closeSafetyModal() {
+  document.getElementById('safety-overlay').classList.remove('open');
+}
+window.toggleAcc = function(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('#safety-overlay .acc-card').forEach(c => {
+    c.classList.remove('open');
+  });
+  if (!isOpen) {
+    card.classList.add('open');
+  }
+};
+
+document.getElementById('safety-btn').addEventListener('click', openSafetyModal);
+document.getElementById('safety-close').addEventListener('click', closeSafetyModal);
+
 document.getElementById('alert-dismiss').addEventListener('click', clearAlarm);
 document.getElementById('simulate-btn').addEventListener('click', simulateEarthquake);
 document.getElementById('clear-btn').addEventListener('click', () => {

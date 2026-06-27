@@ -29,6 +29,151 @@
       transition: opacity 0.5s ease;
     }
     #audio-toast.hidden { opacity: 0; }
+
+    /* ── Safety Guide Modal ── */
+    #safety-overlay {
+      position: fixed; inset: 0; z-index: 8000;
+      background: rgba(10,12,15,0.92);
+      display: none;
+      flex-direction: column;
+      backdrop-filter: blur(6px);
+    }
+    #safety-overlay.open { display: flex; }
+    .safety-header {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px;
+      background: #232730;
+      border-bottom: 1px solid #2C323D;
+      flex-shrink: 0;
+    }
+    .safety-back {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05); border: none; border-radius: 8px;
+      cursor: pointer; color: #F2F0EB;
+    }
+    .safety-back:hover { background: rgba(255,255,255,0.1); }
+    .safety-header-text { flex: 1; }
+    .safety-header-title {
+      font-family: 'Sora', sans-serif; font-weight: 600;
+      font-size: 13px; letter-spacing: 1.4px; color: #F2F0EB; margin: 0;
+    }
+    .safety-header-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: #2DD4BF; letter-spacing: 0.5px; margin-top: 2px;
+    }
+    .safety-body {
+      overflow-y: auto; flex: 1;
+      padding: 16px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .safety-section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: #9A9690; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    /* Principle cards */
+    .principle-card {
+      background: #232730; border-radius: 12px;
+      border-top: 3px solid var(--c);
+      padding: 16px; display: flex; flex-direction: column; gap: 4px;
+    }
+    .principle-icon-box {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 8px;
+    }
+    .principle-icon-box svg { width: 20px; height: 20px; }
+    .principle-step {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: var(--c);
+    }
+    .principle-name {
+      font-family: 'Sora', sans-serif; font-weight: 600;
+      font-size: 18px; color: #F2F0EB;
+    }
+    .principle-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: 0.8px; color: var(--c); text-transform: uppercase;
+    }
+    .principle-desc {
+      font-family: 'Sora', sans-serif; font-size: 13px;
+      color: #9A9690; line-height: 1.6; margin-top: 6px;
+    }
+    /* Accordion */
+    .acc-card {
+      background: #232730; border-radius: 12px;
+      border-left: 3px solid var(--c); overflow: hidden; margin-bottom: 8px;
+    }
+    .acc-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; cursor: pointer; user-select: none;
+      border: none; background: transparent; width: 100%; text-align: left;
+    }
+    .acc-header:hover { background: rgba(255,255,255,0.03); }
+    .acc-icon-box {
+      width: 30px; height: 30px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .acc-icon-box svg { width: 16px; height: 16px; }
+    .acc-title {
+      flex: 1; font-family: 'Sora', sans-serif; font-weight: 600;
+      font-size: 14px; color: #F2F0EB;
+    }
+    .acc-chevron { transition: transform 0.25s ease; }
+    .acc-card.open .acc-chevron { transform: rotate(180deg); }
+    .acc-body { padding: 0 16px 14px; display: none; flex-direction: column; gap: 12px; }
+    .acc-card.open .acc-body { display: flex; }
+    .tip-row { display: flex; gap: 10px; }
+    .tip-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px;
+    }
+    .tip-label {
+      font-family: 'Sora', sans-serif; font-weight: 600;
+      font-size: 13px; margin-bottom: 2px;
+    }
+    .tip-desc {
+      font-family: 'Sora', sans-serif; font-size: 12px;
+      color: #9A9690; line-height: 1.55;
+    }
+    /* After section */
+    .after-card {
+      background: #232730; border-radius: 12px; overflow: hidden;
+    }
+    .after-row {
+      display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px;
+    }
+    .after-row + .after-row { border-top: 1px solid #2C323D; }
+    .after-icon-box {
+      width: 28px; height: 28px; border-radius: 6px;
+      background: rgba(255,107,53,0.1);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .after-icon-box svg { width: 15px; height: 15px; stroke: #FF6B35; }
+    .after-text {
+      font-family: 'Sora', sans-serif; font-size: 13px;
+      color: #9A9690; line-height: 1.6; margin: 0; flex: 1;
+    }
+    .safety-source {
+      text-align: center; padding: 10px 16px;
+      background: rgba(45,212,191,0.06);
+      border: 1px solid rgba(45,212,191,0.15);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; color: #2DD4BF; letter-spacing: 0.6px;
+    }
+    /* Panduan button in navbar */
+    .panduan-btn {
+      display: flex; align-items: center; gap: 5px;
+      padding: 5px 10px; border-radius: 8px;
+      background: rgba(255,107,53,0.1);
+      border: 1px solid rgba(255,107,53,0.25);
+      color: #FF6B35;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; letter-spacing: 1px;
+      cursor: pointer; white-space: nowrap;
+    }
+    .panduan-btn:hover { background: rgba(255,107,53,0.18); }
+    .panduan-btn svg { width: 14px; height: 14px; stroke: #FF6B35; }
   </style>
 </head>
 <body>
@@ -59,6 +204,15 @@
         <div class="status-dot" id="status-dot"></div>
         <span class="status-text" id="status-text">MENGHUBUNGKAN...</span>
       </div>
+      <!-- Safety Guide Button -->
+      <button class="panduan-btn" id="safety-btn" title="Panduan Keselamatan Gempa">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        PANDUAN
+      </button>
       <button class="icon-btn" id="settings-btn" title="Settings">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"></circle>
@@ -248,6 +402,147 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- ═══════════════════ SAFETY GUIDE OVERLAY ═══════════════════ -->
+  <div id="safety-overlay">
+    <div class="safety-header">
+      <button class="safety-back" id="safety-close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="safety-header-text">
+        <p class="safety-header-title">PANDUAN KESELAMATAN</p>
+        <p class="safety-header-sub">Standar BMKG · Drop Cover Hold On</p>
+      </div>
+    </div>
+
+    <div class="safety-body">
+
+      <!-- PRINSIP UTAMA -->
+      <div>
+        <p class="safety-section-label">PRINSIP UTAMA</p>
+        <!-- Merunduk -->
+        <div class="principle-card" style="--c:#FF6B35">
+          <div class="principle-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FF6B35" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+          </div>
+          <span class="principle-step">01</span>
+          <span class="principle-name">MERUNDUK</span>
+          <span class="principle-sub">Drop</span>
+          <p class="principle-desc">Segera jatuhkan badan ke lantai, bertumpu pada tangan dan lutut. Posisi ini mencegah Anda kehilangan keseimbangan akibat guncangan keras dan tetap memungkinkan Anda merayap ke tempat aman.</p>
+        </div>
+        <!-- Lindungi -->
+        <div class="principle-card" style="--c:#2DD4BF; margin-top:10px">
+          <div class="principle-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <span class="principle-step">02</span>
+          <span class="principle-name">LINDUNGI</span>
+          <span class="principle-sub">Cover</span>
+          <p class="principle-desc">Berlindung di bawah meja yang kokoh. Jika tidak ada meja, merapat ke dinding bagian dalam bangunan dan lindungi kepala serta leher dengan kedua lengan, tas, atau bantal.</p>
+        </div>
+        <!-- Bertahan -->
+        <div class="principle-card" style="--c:#FBBF24; margin-top:10px">
+          <div class="principle-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34L4 19"/></svg>
+          </div>
+          <span class="principle-step">03</span>
+          <span class="principle-name">BERTAHAN</span>
+          <span class="principle-sub">Hold On</span>
+          <p class="principle-desc">Pegang erat kaki meja atau pelindung sampai guncangan benar-benar berhenti. Bersiaplah untuk ikut bergerak jika benda pelindung bergeser akibat gempa.</p>
+        </div>
+      </div>
+
+      <!-- TINDAKAN BERDASARKAN LOKASI -->
+      <div>
+        <p class="safety-section-label">TINDAKAN BERDASARKAN LOKASI</p>
+        <!-- Dalam Ruangan -->
+        <div class="acc-card open" style="--c:#2DD4BF" data-acc>
+          <button class="acc-header" onclick="toggleAcc(this.closest('[data-acc]'))">
+            <div class="acc-icon-box" style="background:rgba(45,212,191,0.12)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <span class="acc-title">Di Dalam Ruangan</span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-body">
+            <div class="tip-row"><div class="tip-dot" style="background:#2DD4BF"></div><div><p class="tip-label" style="color:#2DD4BF">Jangan lari keluar</p><p class="tip-desc">Berlari saat tanah berguncang berisiko terkena reruntuhan atau pecahan kaca. Berlindunglah di tempat.</p></div></div>
+            <div class="tip-row"><div class="tip-dot" style="background:#2DD4BF"></div><div><p class="tip-label" style="color:#2DD4BF">Jauhi area bahaya</p><p class="tip-desc">Menjauhlah dari jendela kaca, rak buku tinggi, lemari, atau lampu gantung yang bisa jatuh.</p></div></div>
+            <div class="tip-row"><div class="tip-dot" style="background:#2DD4BF"></div><div><p class="tip-label" style="color:#2DD4BF">Hindari lift</p><p class="tip-desc">Gunakan tangga darurat hanya setelah guncangan berhenti. Jika sudah di dalam lift, tekan semua tombol lantai dan segeralah keluar begitu pintu terbuka.</p></div></div>
+            <div class="tip-row"><div class="tip-dot" style="background:#2DD4BF"></div><div><p class="tip-label" style="color:#2DD4BF">Di dapur</p><p class="tip-desc">Segera matikan kompor jika sedang memasak untuk mencegah kebakaran.</p></div></div>
+          </div>
+        </div>
+        <!-- Luar Ruangan -->
+        <div class="acc-card" style="--c:#34D399" data-acc>
+          <button class="acc-header" onclick="toggleAcc(this.closest('[data-acc]'))">
+            <div class="acc-icon-box" style="background:rgba(52,211,153,0.12)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2"><path d="M17 14V2"/><path d="M9 18.12L10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88z"/></svg>
+            </div>
+            <span class="acc-title">Di Luar Ruangan</span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="#9A9690" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-body">
+            <div class="tip-row"><div class="tip-dot" style="background:#34D399"></div><div><p class="tip-label" style="color:#34D399">Cari area terbuka</p><p class="tip-desc">Segera menjauh dari gedung, tiang listrik, pohon besar, dan papan reklame. Area paling mematikan sering tepat di luar pintu masuk gedung.</p></div></div>
+            <div class="tip-row"><div class="tip-dot" style="background:#34D399"></div><div><p class="tip-label" style="color:#34D399">Perhatikan pijakan</p><p class="tip-desc">Waspadai tanah yang merekah atau lubang pembuangan yang amblas.</p></div></div>
+          </div>
+        </div>
+        <!-- Mengemudi -->
+        <div class="acc-card" style="--c:#FBBF24" data-acc>
+          <button class="acc-header" onclick="toggleAcc(this.closest('[data-acc]'))">
+            <div class="acc-icon-box" style="background:rgba(251,191,36,0.12)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            </div>
+            <span class="acc-title">Saat Mengemudi</span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="#9A9690" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-body">
+            <div class="tip-row"><div class="tip-dot" style="background:#FBBF24"></div><div><p class="tip-label" style="color:#FBBF24">Menepi dengan aman</p><p class="tip-desc">Hindari berhenti di bawah jalan layang, jembatan, kabel listrik, terowongan, atau pohon besar.</p></div></div>
+            <div class="tip-row"><div class="tip-dot" style="background:#FBBF24"></div><div><p class="tip-label" style="color:#FBBF24">Tetap di dalam kendaraan</p><p class="tip-desc">Pasang rem tangan, nyalakan lampu hazard, dan tunggu hingga guncangan berhenti. Rangka mobil memberikan perlindungan dari material yang berjatuhan.</p></div></div>
+          </div>
+        </div>
+        <!-- Pantai/Gunung -->
+        <div class="acc-card" style="--c:#60A5FA" data-acc>
+          <button class="acc-header" onclick="toggleAcc(this.closest('[data-acc]'))">
+            <div class="acc-icon-box" style="background:rgba(96,165,250,0.12)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2"><polygon points="3 20 15 4 21 20 3 20"/></svg>
+            </div>
+            <span class="acc-title">Di Pantai / Pegunungan</span>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="#9A9690" stroke-width="2" width="18" height="18"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-body">
+            <div class="tip-row"><div class="tip-dot" style="background:#60A5FA"></div><div><p class="tip-label" style="color:#60A5FA">Di Pantai — Evakuasi segera</p><p class="tip-desc">Begitu guncangan berhenti, langsung lari ke dataran tinggi. Jangan menunggu sirene tsunami berbunyi atau melihat air laut surut.</p></div></div>
+            <div class="tip-row"><div class="tip-dot" style="background:#60A5FA"></div><div><p class="tip-label" style="color:#60A5FA">Di Pegunungan — Hindari tebing</p><p class="tip-desc">Jauhi area tebing, lereng curam, atau perbukitan yang rawan longsor akibat guncangan.</p></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETELAH GUNCANGAN BERHENTI -->
+      <div>
+        <p class="safety-section-label">SETELAH GUNCANGAN BERHENTI</p>
+        <div class="after-card">
+          <div class="after-row">
+            <div class="after-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div>
+            <p class="after-text">Evakuasi keluar bangunan dengan tenang, terus lindungi kepala.</p>
+          </div>
+          <div class="after-row">
+            <div class="after-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+            <p class="after-text">Waspadai gempa susulan (aftershock) yang bisa terjadi kapan saja.</p>
+          </div>
+          <div class="after-row">
+            <div class="after-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+            <p class="after-text">Periksa titik api dan kebocoran gas. Matikan sakelar listrik utama jika aman.</p>
+          </div>
+          <div class="after-row">
+            <div class="after-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.56 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+            <p class="after-text">Hindari menyebarkan informasi yang belum diverifikasi BMKG atau BPBD.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="safety-source">Sumber: BMKG &nbsp;·&nbsp; Standar Internasional &nbsp;·&nbsp; BPBD</div>
+    </div>
   </div>
 
   <!-- SETTINGS MODAL -->
