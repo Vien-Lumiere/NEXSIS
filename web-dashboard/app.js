@@ -114,6 +114,66 @@ function setStatus(state) {
   text.textContent = labels[state] || state;
 }
 
+// ─── AUDIO SYNTHESIS (WEB AUDIO API) ─────────────────────────────────────────
+let audioCtx = null;
+let alarmInterval = null;
+let activeOscillators = [];
+
+function initAudio() {
+  if (audioCtx) return;
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (AudioContext) {
+    audioCtx = new AudioContext();
+  }
+}
+
+function playAlarmSound() {
+  initAudio();
+  if (!audioCtx) return;
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  if (alarmInterval) return;
+
+  const playSirenCycle = () => {
+    if (!audioCtx || audioCtx.state === 'suspended') return;
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    // Sci-fi sweep alarm tone (sawtooth, sweeping frequency)
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(550, audioCtx.currentTime);
+    osc.frequency.linearRampToValueAtTime(950, audioCtx.currentTime + 0.35);
+    osc.frequency.linearRampToValueAtTime(550, audioCtx.currentTime + 0.7);
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime + 0.6);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.7);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.7);
+    activeOscillators.push(osc);
+  };
+
+  playSirenCycle();
+  alarmInterval = setInterval(playSirenCycle, 700);
+}
+
+function stopAlarmSound() {
+  if (alarmInterval) {
+    clearInterval(alarmInterval);
+    alarmInterval = null;
+  }
+  activeOscillators.forEach(osc => {
+    try { osc.stop(); } catch {}
+  });
+  activeOscillators = [];
+}
+
 // ─── ALARM ───────────────────────────────────────────────────────────────────
 function triggerAlarm(event) {
   isAlarmActive = true;
@@ -126,6 +186,8 @@ function triggerAlarm(event) {
   document.getElementById('waveform-label').classList.add('alert');
   document.getElementById('waveform-panel').style.borderBottom = '2px solid #FF6B35';
 
+  playAlarmSound();
+
   clearTimeout(window._alarmTimeout);
   window._alarmTimeout = setTimeout(clearAlarm, 8000);
 }
@@ -136,6 +198,8 @@ function clearAlarm() {
   document.getElementById('waveform-label').textContent = '✦ SENSOR STANDBY / MONITORING AKTIF';
   document.getElementById('waveform-label').classList.remove('alert');
   document.getElementById('waveform-panel').style.borderBottom = '';
+  
+  stopAlarmSound();
 }
 
 // ─── HISTORY TABLE ───────────────────────────────────────────────────────────
@@ -345,6 +409,26 @@ document.getElementById('clear-btn').addEventListener('click', () => {
 window.addEventListener('resize', () => {
   resizeCanvas();
 });
+
+// ─── MOBILE AUDIO UNLOCK ──────────────────────────────────────────────────────
+// Mobile browsers (Chrome/Safari) block AudioContext until a user gesture.
+// We unlock it on the very first touch or click anywhere on the page.
+const unlockAudio = () => {
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  // Hide the toast
+  const toast = document.getElementById('audio-toast');
+  if (toast) {
+    toast.classList.add('hidden');
+    setTimeout(() => toast.remove(), 600);
+  }
+  window.removeEventListener('touchstart', unlockAudio);
+  window.removeEventListener('click', unlockAudio);
+};
+window.addEventListener('touchstart', unlockAudio, { once: true });
+window.addEventListener('click', unlockAudio, { once: true });
 
 // ─── FCM PUSH BRIDGE ──────────────────────────────────────────────────────────
 // firebase.js dispatches this custom event when a foreground FCM push arrives.

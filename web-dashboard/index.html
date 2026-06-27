@@ -9,8 +9,32 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Audio unlock toast (mobile) ── */
+    #audio-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(45, 212, 191, 0.12);
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      color: #2DD4BF;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 8px 16px;
+      border-radius: 20px;
+      z-index: 9999;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    #audio-toast.hidden { opacity: 0; }
+  </style>
 </head>
 <body>
+  <!-- Audio unlock toast (shown on mobile until first tap) -->
+  <div id="audio-toast">🔔 TAP ANYWHERE TO ENABLE SOUND</div>
+
   <!-- ═══════════════════ NAVBAR ═══════════════════ -->
   <header class="navbar" id="navbar">
     <div class="navbar-brand">
