@@ -12,7 +12,22 @@ import {
   UIManager,
 } from 'react-native';
 import { theme } from '../config/theme';
-import { ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  Home,
+  Trees,
+  Car,
+  Mountain,
+  ArrowDownToLine,
+  Shield,
+  Grip,
+  LogOut,
+  AlertTriangle,
+  Flame,
+  WifiOff,
+} from 'lucide-react-native';
 
 // Enable LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -29,7 +44,6 @@ const PRINCIPLE_CARDS = [
     step: '01',
     title: 'MERUNDUK',
     subtitle: 'Drop',
-    icon: '🦵',
     color: '#FF6B35',
     content:
       'Segera jatuhkan badan ke lantai, bertumpu pada tangan dan lutut. Posisi ini mencegah Anda kehilangan keseimbangan akibat guncangan keras dan tetap memungkinkan Anda merayap ke tempat aman.',
@@ -38,7 +52,6 @@ const PRINCIPLE_CARDS = [
     step: '02',
     title: 'LINDUNGI',
     subtitle: 'Cover',
-    icon: '🛡️',
     color: '#2DD4BF',
     content:
       'Berlindung di bawah meja yang kokoh. Jika tidak ada meja, merapat ke dinding bagian dalam bangunan dan lindungi kepala serta leher dengan kedua lengan, tas, atau bantal.',
@@ -47,17 +60,25 @@ const PRINCIPLE_CARDS = [
     step: '03',
     title: 'BERTAHAN',
     subtitle: 'Hold On',
-    icon: '✊',
     color: '#FBBF24',
     content:
       'Pegang erat kaki meja atau pelindung sampai guncangan benar-benar berhenti. Bersiaplah untuk ikut bergerak jika benda pelindung bergeser akibat gempa.',
   },
 ];
 
-const LOCATION_SECTIONS = [
+// lucide icon component stored per section
+type LocationSection = {
+  id: string;
+  Icon: React.ComponentType<{ color: string; size: number }>;
+  title: string;
+  accent: string;
+  tips: { label: string; desc: string }[];
+};
+
+const LOCATION_SECTIONS: LocationSection[] = [
   {
     id: 'indoor',
-    icon: '🏠',
+    Icon: Home,
     title: 'Di Dalam Ruangan',
     accent: '#2DD4BF',
     tips: [
@@ -69,7 +90,7 @@ const LOCATION_SECTIONS = [
   },
   {
     id: 'outdoor',
-    icon: '🌳',
+    Icon: Trees,
     title: 'Di Luar Ruangan',
     accent: '#34D399',
     tips: [
@@ -79,7 +100,7 @@ const LOCATION_SECTIONS = [
   },
   {
     id: 'driving',
-    icon: '🚗',
+    Icon: Car,
     title: 'Saat Mengemudi',
     accent: '#FBBF24',
     tips: [
@@ -89,7 +110,7 @@ const LOCATION_SECTIONS = [
   },
   {
     id: 'beach',
-    icon: '🏔️',
+    Icon: Mountain,
     title: 'Di Pantai / Pegunungan',
     accent: '#60A5FA',
     tips: [
@@ -99,16 +120,24 @@ const LOCATION_SECTIONS = [
   },
 ];
 
-const AFTER_TIPS = [
-  { icon: '🚶', text: 'Evakuasi keluar bangunan dengan tenang, terus lindungi kepala.' },
-  { icon: '⚠️', text: 'Waspadai gempa susulan (aftershock) yang bisa terjadi kapan saja.' },
-  { icon: '🔥', text: 'Periksa titik api dan kebocoran gas. Matikan sakelar listrik utama jika aman.' },
-  { icon: '📵', text: 'Hindari menyebarkan informasi yang belum diverifikasi BMKG atau BPBD.' },
+type AfterTip = {
+  Icon: React.ComponentType<{ color: string; size: number }>;
+  text: string;
+};
+
+const AFTER_TIPS: AfterTip[] = [
+  { Icon: LogOut,        text: 'Evakuasi keluar bangunan dengan tenang, terus lindungi kepala.' },
+  { Icon: AlertTriangle, text: 'Waspadai gempa susulan (aftershock) yang bisa terjadi kapan saja.' },
+  { Icon: Flame,         text: 'Periksa titik api dan kebocoran gas. Matikan sakelar listrik utama jika aman.' },
+  { Icon: WifiOff,       text: 'Hindari menyebarkan informasi yang belum diverifikasi BMKG atau BPBD.' },
 ];
+
+// Principle step icon mapping
+const PRINCIPLE_ICONS = [ArrowDownToLine, Shield, Grip];
 
 // ─── ACCORDION CARD ───────────────────────────────────────────────────────────
 const LocationCard: React.FC<{
-  section: typeof LOCATION_SECTIONS[0];
+  section: LocationSection;
   isOpen: boolean;
   onToggle: () => void;
 }> = ({ section, isOpen, onToggle }) => (
@@ -118,7 +147,9 @@ const LocationCard: React.FC<{
       onPress={onToggle}
       activeOpacity={0.7}
     >
-      <Text style={styles.accordionIcon}>{section.icon}</Text>
+      <View style={[styles.accordionIconBox, { backgroundColor: section.accent + '18' }]}>
+        <section.Icon color={section.accent} size={16} />
+      </View>
       <Text style={styles.accordionTitle}>{section.title}</Text>
       {isOpen
         ? <ChevronUp color={section.accent} size={18} />
@@ -172,15 +203,20 @@ export const SafetyScreen: React.FC<SafetyScreenProps> = ({ onClose }) => {
         {/* ── Prinsip Utama ── */}
         <Text style={styles.sectionLabel}>PRINSIP UTAMA</Text>
         <View style={styles.principleRow}>
-          {PRINCIPLE_CARDS.map(card => (
-            <View key={card.step} style={[styles.principleCard, { borderTopColor: card.color }]}>
-              <Text style={styles.principleEmoji}>{card.icon}</Text>
-              <Text style={[styles.principleStep, { color: card.color }]}>{card.step}</Text>
-              <Text style={styles.principleTitle}>{card.title}</Text>
-              <Text style={[styles.principleSub, { color: card.color }]}>{card.subtitle}</Text>
-              <Text style={styles.principleDesc}>{card.content}</Text>
-            </View>
-          ))}
+          {PRINCIPLE_CARDS.map((card, idx) => {
+            const PrincipleIcon = PRINCIPLE_ICONS[idx];
+            return (
+              <View key={card.step} style={[styles.principleCard, { borderTopColor: card.color }]}>
+                <View style={[styles.principleIconBox, { backgroundColor: card.color + '1A' }]}>
+                  <PrincipleIcon color={card.color} size={22} />
+                </View>
+                <Text style={[styles.principleStep, { color: card.color }]}>{card.step}</Text>
+                <Text style={styles.principleTitle}>{card.title}</Text>
+                <Text style={[styles.principleSub, { color: card.color }]}>{card.subtitle}</Text>
+                <Text style={styles.principleDesc}>{card.content}</Text>
+              </View>
+            );
+          })}
         </View>
 
         {/* ── Tindakan Berdasarkan Lokasi ── */}
@@ -203,7 +239,9 @@ export const SafetyScreen: React.FC<SafetyScreenProps> = ({ onClose }) => {
         <View style={styles.afterCard}>
           {AFTER_TIPS.map((tip, idx) => (
             <View key={idx} style={[styles.afterRow, idx !== 0 && styles.afterRowBorder]}>
-              <Text style={styles.afterEmoji}>{tip.icon}</Text>
+              <View style={styles.afterIconBox}>
+                <tip.Icon color={theme.colors.accentAlert} size={16} />
+              </View>
               <Text style={styles.afterText}>{tip.text}</Text>
             </View>
           ))}
@@ -274,7 +312,14 @@ const styles = StyleSheet.create({
     borderTopWidth: 3,
     padding: theme.spacing.md,
   },
-  principleEmoji: { fontSize: 28, marginBottom: theme.spacing.xs },
+  principleIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: theme.borderRadius.md,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: theme.spacing.sm,
+  },
   principleStep: {
     fontFamily: theme.fonts.monoBold,
     fontSize: 11,
@@ -315,7 +360,13 @@ const styles = StyleSheet.create({
     padding: theme.spacing.md,
     gap: theme.spacing.sm,
   },
-  accordionIcon: { fontSize: 20 },
+  accordionIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: theme.borderRadius.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   accordionTitle: {
     flex: 1,
     fontFamily: theme.fonts.heading,
@@ -354,7 +405,14 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#2C323D',
   },
-  afterEmoji: { fontSize: 20, width: 28, textAlign: 'center' },
+  afterIconBox: {
+    width: 28,
+    height: 28,
+    borderRadius: theme.borderRadius.sm,
+    backgroundColor: 'rgba(255,107,53,0.10)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   afterText: {
     flex: 1,
     fontFamily: theme.fonts.subheading,
