@@ -325,13 +325,20 @@ async function fetchHistory() {
 
 // ─── SIMULATE ────────────────────────────────────────────────────────────────
 async function simulateEarthquake() {
+  const password = prompt('Masukkan password untuk melakukan simulasi:');
+  if (password !== 'rafi ganteng') {
+    alert('Password salah! Simulasi dibatalkan.');
+    return;
+  }
+
   try {
     const r = await fetch(`${API_BASE()}/earthquake`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         sensor: 'Nexsis-SIM',
-        status: 'earthquake_detected'
+        status: 'earthquake_detected',
+        password: password
       })
     });
     if (!r.ok) throw new Error('Network error');

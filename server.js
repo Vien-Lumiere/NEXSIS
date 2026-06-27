@@ -114,6 +114,19 @@ app.get('/history', (req, res) => {
 // 3. POST /earthquake - Incoming event from ESP8266 or simulated trigger
 app.post('/earthquake', (req, res) => {
   const body = req.body || {};
+
+  // Check if it's a simulated event (contains 'sim' or 'test' in sensor name)
+  const isSimulation = body.sensor && (
+    body.sensor.toLowerCase().includes('sim') ||
+    body.sensor.toLowerCase().includes('test')
+  );
+
+  if (isSimulation) {
+    if (body.password !== 'rafi ganteng') {
+      return res.status(403).json({ ok: false, message: 'Password salah untuk melakukan simulasi.' });
+    }
+  }
+
   const newEvent = {
     id: body.id || Date.now(),
     status: body.status || 'earthquake_detected',

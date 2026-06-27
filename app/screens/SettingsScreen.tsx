@@ -25,6 +25,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onClose }) => {
   const [newWsUrl, setNewWsUrl] = useState(wsUrl);
   const [newApiKey, setNewApiKey] = useState(apiKey);
   const [saving, setSaving] = useState(false);
+  const [testPassword, setTestPassword] = useState('');
 
   const handleSave = async () => {
     if (!newApiUrl.trim() || !newWsUrl.trim()) {
@@ -47,6 +48,11 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onClose }) => {
 
   // Helper to trigger a local mock alert for testing
   const handleTestTrigger = () => {
+    if (testPassword !== 'rafi ganteng') {
+      Alert.alert('Akses Ditolak', 'Password simulasi salah.');
+      return;
+    }
+
     const mockData = {
       id: Date.now(),
       status: 'earthquake_detected',
@@ -152,6 +158,21 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onClose }) => {
 
           <Text style={styles.sectionTitle}>SISTEM DIAGNOSTIK</Text>
           
+          {/* Simulation Password Input */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>PASSWORD SIMULASI</Text>
+            <TextInput
+              style={styles.input}
+              value={testPassword}
+              onChangeText={setTestPassword}
+              placeholder="Masukkan password untuk simulasi"
+              placeholderTextColor={theme.colors.textSecondary}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
+
           {/* Test Trigger Button */}
           <TouchableOpacity 
             style={styles.testButton} 
