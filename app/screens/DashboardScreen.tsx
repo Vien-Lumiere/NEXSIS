@@ -6,7 +6,16 @@ import { HistoryList } from '../components/HistoryList';
 import { AlertCard } from '../components/AlertCard';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { theme } from '../config/theme';
-import { Settings, ShieldAlert } from 'lucide-react-native';
+import { Settings } from 'lucide-react-native';
+import Svg, { Path, Line } from 'react-native-svg';
+
+const ShieldAlertIcon = ({ color, size }: { color: string; size: number }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <Line x1={12} y1={8} x2={12} y2={12} />
+    <Line x1={12} y1={16} x2={12.01} y2={16} />
+  </Svg>
+);
 
 interface DashboardScreenProps {
   onOpenSettings: () => void;
@@ -34,7 +43,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenSettings
           activeOpacity={0.7}
           accessibilityLabel="Panduan Keselamatan Gempa"
         >
-          <ShieldAlert color={theme.colors.accentAlert} size={16} />
+          <ShieldAlertIcon color={theme.colors.accentAlert} size={16} />
           <Text style={styles.safetyButtonText}>PANDUAN</Text>
         </TouchableOpacity>
 
