@@ -47,3 +47,11 @@ nexsis-da1b2-firebase-adminsdk-fbsvc-c9f83bb248.json
 
 # Stitch MCP cache
 stitch_*.json
+
+# Firebase init artifacts
+skills-lock.json
+projectUGM
+
+# Agent skills (local tooling only)
+.agents/
+.claude/skills/
