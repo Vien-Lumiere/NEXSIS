@@ -6,7 +6,7 @@ export const STORAGE_KEYS = {
 
 // Default fallbacks (can be updated in Settings page)
 export const DEFAULT_CONFIG = {
-  API_URL: 'https://chic-nurturing-production-7557.up.railway.app', // Points to the deployed VPS
-  WS_URL: 'wss://chic-nurturing-production-7557.up.railway.app',
+  API_URL: 'https://nexsis-production.up.railway.app', // Points to the deployed VPS
+  WS_URL: 'wss://nexsis-production.up.railway.app',
   API_KEY: '',
 };
