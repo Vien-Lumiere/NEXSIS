@@ -262,7 +262,7 @@ async function simulateEarthquake() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        sensor: 'SW420-SIM',
+        sensor: 'Nexsis-SIM',
         status: 'earthquake_detected'
       })
     });
@@ -272,7 +272,7 @@ async function simulateEarthquake() {
     const mock = {
       id: Date.now(),
       status: 'earthquake_detected',
-      sensor: 'SW420-SIM',
+      sensor: 'Nexsis-SIM',
       timestamp: new Date().toISOString(),
       receivedAt: formatDate(new Date())
     };

@@ -82,14 +82,14 @@ const earthquakeHistory = [
   {
     id: 1234567800,
     status: 'earthquake_detected',
-    sensor: 'SW420-A1',
+    sensor: 'Nexsis-A1',
     timestamp: new Date(Date.now() - 3600000).toISOString(),
     receivedAt: formatDate(new Date(Date.now() - 3600000)),
   },
   {
     id: 1234567801,
     status: 'earthquake_detected',
-    sensor: 'SW420-B2',
+    sensor: 'Nexsis-B2',
     timestamp: new Date(Date.now() - 7200000).toISOString(),
     receivedAt: formatDate(new Date(Date.now() - 7200000)),
   }
@@ -117,7 +117,7 @@ app.post('/earthquake', (req, res) => {
   const newEvent = {
     id: body.id || Date.now(),
     status: body.status || 'earthquake_detected',
-    sensor: body.sensor || 'SW420',
+    sensor: body.sensor || 'Nexsis',
     timestamp: body.timestamp || new Date().toISOString(),
     receivedAt: formatDate(new Date()),
   };
@@ -215,7 +215,7 @@ if (process.stdin.isTTY) {
       const mockEvent = {
         id: Date.now(),
         status: 'earthquake_detected',
-        sensor: 'SW420-SIM',
+        sensor: 'Nexsis-SIM',
         timestamp: new Date().toISOString(),
         receivedAt: formatDate(new Date()),
       };
