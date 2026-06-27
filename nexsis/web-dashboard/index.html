@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXSIS — Seismic Monitoring Dashboard</title>
+  <meta name="description" content="NEXSIS real-time earthquake detection and seismic monitoring system dashboard." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ═══════════════════ NAVBAR ═══════════════════ -->
+  <header class="navbar" id="navbar">
+    <div class="navbar-brand">
+      <div class="brand-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="2 12 6 4 10 16 14 8 18 20 22 12"></polyline>
+        </svg>
+      </div>
+      <span class="brand-name">NEXSIS</span>
+      <span class="brand-sub">SEISMIC MONITOR</span>
+    </div>
+
+    <div class="navbar-center">
+      <div class="host-pill" id="host-display">
+        <span class="host-label">HOST</span>
+        <span class="host-value" id="host-value">localhost:5000</span>
+      </div>
+    </div>
+
+    <div class="navbar-right">
+      <div class="status-badge" id="status-badge">
+        <div class="status-dot" id="status-dot"></div>
+        <span class="status-text" id="status-text">MENGHUBUNGKAN...</span>
+      </div>
+      <button class="icon-btn" id="settings-btn" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ ALERT BANNER ═══════════════════ -->
+  <div class="alert-banner" id="alert-banner" style="display:none;">
+    <div class="alert-banner-inner">
+      <div class="alert-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <div class="alert-text">
+        <strong id="alert-title">⚠ VIBRASI SEISMIK ANOMALI</strong>
+        <span id="alert-detail">Sensor SW420 — mendeteksi getaran</span>
+      </div>
+      <button class="alert-dismiss" id="alert-dismiss">DISMISS</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ MAIN LAYOUT ═══════════════════ -->
+  <div class="main-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">SENSOR AKTIF</h3>
+        <div class="sensor-list" id="sensor-list">
+          <div class="sensor-item online" id="sensor-a1">
+            <div class="sensor-icon">
+              <div class="sensor-dot online"></div>
+            </div>
+            <div class="sensor-info">
+              <span class="sensor-name">SW420-A1</span>
+              <span class="sensor-meta">CH-1 · Analog</span>
+            </div>
+            <span class="sensor-status-badge online">ONLINE</span>
+          </div>
+          <div class="sensor-item online" id="sensor-b2">
+            <div class="sensor-icon">
+              <div class="sensor-dot online"></div>
+            </div>
+            <div class="sensor-info">
+              <span class="sensor-name">SW420-B2</span>
+              <span class="sensor-meta">CH-2 · Analog</span>
+            </div>
+            <span class="sensor-status-badge online">ONLINE</span>
+          </div>
+          <div class="sensor-item offline" id="sensor-c3">
+            <div class="sensor-icon">
+              <div class="sensor-dot offline"></div>
+            </div>
+            <div class="sensor-info">
+              <span class="sensor-name">SW420-C3</span>
+              <span class="sensor-meta">CH-3 · Analog</span>
+            </div>
+            <span class="sensor-status-badge offline">OFFLINE</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">STATISTIK</h3>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-today">0</span>
+            <span class="stat-label">Events Hari Ini</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value teal" id="stat-sensors">2</span>
+            <span class="stat-label">Sensor Aktif</span>
+          </div>
+          <div class="stat-card stat-wide">
+            <span class="stat-value mono" id="stat-uptime">00:00:00</span>
+            <span class="stat-label">Server Uptime</span>
+          </div>
+          <div class="stat-card stat-wide">
+            <span class="stat-value mono orange" id="stat-last-alert">—</span>
+            <span class="stat-label">Last Alert</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3 class="sidebar-title">SERVER CONFIG</h3>
+        <div class="config-list">
+          <div class="config-item">
+            <span class="config-key">PORT</span>
+            <span class="config-val mono">5000</span>
+          </div>
+          <div class="config-item">
+            <span class="config-key">PROTOCOL</span>
+            <span class="config-val mono">WebSocket</span>
+          </div>
+          <div class="config-item">
+            <span class="config-key">FCM TOPIC</span>
+            <span class="config-val mono">nexsis-alerts</span>
+          </div>
+          <div class="config-item">
+            <span class="config-key">MAX HISTORY</span>
+            <span class="config-val mono">50 events</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="sim-btn" id="simulate-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          Simulasi Gempa
+        </button>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT -->
+    <main class="content">
+      <!-- WAVEFORM PANEL -->
+      <section class="waveform-panel" id="waveform-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <span class="panel-label" id="waveform-label">✦ SENSOR STANDBY / MONITORING AKTIF</span>
+          </div>
+          <div class="waveform-meta">
+            <span class="meta-tag">RANGE: ±1.5G</span>
+            <span class="meta-tag">FREQ: 100HZ</span>
+            <span class="meta-tag">SW420 ANALOG CH-1</span>
+          </div>
+        </div>
+        <div class="waveform-container" id="waveform-container">
+          <div class="grid-overlay">
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+            <div class="grid-line"></div>
+          </div>
+          <canvas id="waveform-canvas" class="waveform-canvas"></canvas>
+          <div class="waveform-axis">
+            <span class="axis-label">+1.5G</span>
+            <span class="axis-label">0</span>
+            <span class="axis-label">-1.5G</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTORY TABLE -->
+      <section class="history-panel">
+        <div class="panel-header">
+          <h2 class="panel-heading">LOG SEISMIK</h2>
+          <div class="panel-actions">
+            <span class="event-count" id="event-count">0 events</span>
+            <button class="clear-btn" id="clear-btn">Hapus Log</button>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table class="data-table" id="history-table">
+            <thead>
+              <tr>
+                <th>ID EVENT</th>
+                <th>SENSOR</th>
+                <th>STATUS</th>
+                <th>TIMESTAMP</th>
+                <th>RECEIVED AT</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <tr class="empty-row">
+                <td colspan="5">
+                  <div class="empty-state">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3">
+                      <polyline points="2 12 6 4 10 16 14 8 18 20 22 12"></polyline>
+                    </svg>
+                    <span>Belum ada data seismik terdeteksi</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay" id="modal-overlay" style="display:none;">
+    <div class="modal" id="settings-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">PENGATURAN SERVER</h2>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">WebSocket URL</label>
+          <input type="text" class="form-input" id="ws-url-input" value="ws://localhost:5000" placeholder="ws://your-server:5000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Auto-reconnect</label>
+          <label class="toggle-label">
+            <input type="checkbox" id="auto-reconnect" checked />
+            <span class="toggle-slider"></span>
+            <span>Aktifkan auto-reconnect</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="modal-cancel">Batal</button>
+        <button class="btn-primary" id="modal-save">Simpan & Hubungkan</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

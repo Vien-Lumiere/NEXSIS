@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEXSIS Mobile - Seismic Monitoring</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#b6b8be",
+                    "outline-variant": "#3c4a46",
+                    "background": "#051424",
+                    "tertiary-fixed": "#e0e3e5",
+                    "tertiary-fixed-dim": "#c4c7c9",
+                    "on-tertiary-fixed-variant": "#444749",
+                    "error": "#ffb4ab",
+                    "tertiary": "#d8dadc",
+                    "surface-container-highest": "#273647",
+                    "on-secondary-fixed-variant": "#44474b",
+                    "on-primary": "#003731",
+                    "surface-container": "#122131",
+                    "on-secondary-fixed": "#191c20",
+                    "on-surface-variant": "#bacac5",
+                    "inverse-primary": "#006b5f",
+                    "surface-variant": "#273647",
+                    "on-error-container": "#ffdad6",
+                    "surface": "#051424",
+                    "tertiary-container": "#bcbec0",
+                    "on-tertiary": "#2d3133",
+                    "secondary": "#c5c6cc",
+                    "primary-fixed": "#62fae3",
+                    "inverse-surface": "#d4e4fa",
+                    "on-primary-fixed-variant": "#005047",
+                    "on-primary-fixed": "#00201c",
+                    "surface-container-lowest": "#010f1f",
+                    "surface-bright": "#2c3a4c",
+                    "surface-tint": "#3cddc7",
+                    "surface-container-high": "#1c2b3c",
+                    "on-surface": "#d4e4fa",
+                    "outline": "#859490",
+                    "error-container": "#93000a",
+                    "secondary-fixed-dim": "#c5c6cc",
+                    "on-tertiary-container": "#4a4d4f",
+                    "surface-container-low": "#0d1c2d",
+                    "inverse-on-surface": "#233143",
+                    "primary-container": "#2dd4bf",
+                    "primary": "#57f1db",
+                    "secondary-fixed": "#e1e2e8",
+                    "on-background": "#d4e4fa",
+                    "on-primary-container": "#00574d",
+                    "secondary-container": "#46494e",
+                    "on-secondary": "#2e3135",
+                    "surface-dim": "#051424",
+                    "on-error": "#690005",
+                    "on-tertiary-fixed": "#191c1e",
+                    "primary-fixed-dim": "#3cddc7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "sm": "8px",
+                    "unit": "4px",
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "margin-tablet": "32px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "gutter": "12px"
+            },
+            "fontFamily": {
+                    "body-md": ["Sora"],
+                    "headline-sm": ["Sora"],
+                    "headline-lg": ["Sora"],
+                    "headline-lg-mobile": ["Sora"],
+                    "headline-md": ["Sora"],
+                    "body-lg": ["Sora"],
+                    "data-md": ["JetBrains Mono"],
+                    "data-lg": ["JetBrains Mono"],
+                    "label-caps": ["JetBrains Mono"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-md": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+                    "data-lg": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #051424; /* Graphite base */
+            color: #d4e4fa;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .pulse-teal {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+        .waveform-grid {
+            background-image: linear-gradient(to right, rgba(87, 241, 219, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(87, 241, 219, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-body-md overflow-x-hidden pb-24">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-surface border-b border-outline-variant/20 flex justify-between items-center px-margin-mobile py-md w-full z-50">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary dark:text-primary">sensors</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary tracking-tight">NEXSIS</h1>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-primary pulse-teal"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-widest">ONLINE</span>
+</div>
+<span class="font-data-md text-data-md text-on-surface-variant opacity-70">192.168.1.104</span>
+</div>
+<button class="active:scale-95 transition-transform p-xs rounded-lg hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+</header>
+<main class="p-margin-mobile space-y-lg max-w-md mx-auto">
+<!-- Live Seismograph Card -->
+<section class="space-y-sm">
+<div class="flex justify-between items-end px-1">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant">LIVE MONITOR</h2>
+<div class="flex gap-md">
+<div class="text-right">
+<p class="text-[9px] font-label-caps text-outline-variant leading-none">RANGE</p>
+<p class="font-data-md text-data-md text-primary">2.0G</p>
+</div>
+<div class="text-right">
+<p class="text-[9px] font-label-caps text-outline-variant leading-none">FREQ</p>
+<p class="font-data-md text-data-md text-primary">15.4Hz</p>
+</div>
+</div>
+</div>
+<div class="relative w-full aspect-video rounded-xl overflow-hidden bg-surface-container-low border border-outline-variant/30 shadow-2xl">
+<!-- Shader Background -->
+<!-- STITCH_SHADER_START:ANIMATION_7 class="absolute inset-0 w-full h-full opacity-60" -->
+<div class="absolute inset-0 w-full h-full opacity-60" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_7" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_7');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+  varying vec2 v_texCoord;
+  uniform float u_time;
+  uniform vec2 u_resolution;
+
+  void main() {
+      vec2 uv = v_texCoord;
+      
+      // Teal color: #2DD4BF -> vec3(0.176, 0.831, 0.749)
+      vec3 teal = vec3(0.176, 0.831, 0.749);
+      vec3 graphite = vec3(0.102, 0.114, 0.129); // #1A1D21
+      
+      // Wave calculation
+      float wave = 0.0;
+      wave += sin(uv.x * 20.0 - u_time * 5.0) * 0.05;
+      wave += sin(uv.x * 35.0 + u_time * 3.0) * 0.02;
+      wave += sin(uv.x * 12.0 - u_time * 2.0) * 0.08;
+      
+      float dist = abs(uv.y - 0.5 - wave);
+      float line = smoothstep(0.015, 0.0, dist);
+      
+      // Grid lines
+      float grid = 0.0;
+      grid += smoothstep(0.005, 0.0, abs(fract(uv.x * 10.0) - 0.5)) * 0.05;
+      grid += smoothstep(0.005, 0.0, abs(fract(uv.y * 10.0) - 0.5)) * 0.05;
+      
+      vec3 finalColor = mix(graphite, teal, line + grid);
+      
+      gl_FragColor = vec4(finalColor, 1.0);
+  }`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_7 -->
+<!-- Overlay Grid and UI -->
+<div class="absolute inset-0 waveform-grid pointer-events-none"></div>
+<!-- Floating Legend -->
+<div class="absolute bottom-sm left-sm bg-surface-container-highest/80 backdrop-blur-md px-sm py-xs rounded border border-outline-variant/20">
+<span class="font-data-md text-[10px] text-on-surface flex items-center gap-xs">
+<span class="w-2 h-[1px] bg-primary"></span> AXIS-Z ACTIVE
+                    </span>
+</div>
+</div>
+</section>
+<!-- Recent Earthquake History -->
+<section class="space-y-md">
+<h2 class="font-label-caps text-label-caps text-on-surface-variant px-1">ACTIVITY LOG</h2>
+<div class="space-y-sm">
+<!-- Card 1: Detected -->
+<div class="group bg-surface-container-high p-md rounded-xl border border-outline-variant/10 hover:border-error/30 transition-all active:scale-[0.98]">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-block px-sm py-xs bg-error/10 text-error rounded font-label-caps text-[10px] border border-error/20">DETECTED</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-sm">SW420-A1</h3>
+</div>
+<div class="text-right">
+<p class="font-data-md text-data-md text-on-surface-variant">14:02:11</p>
+<p class="text-[10px] font-label-caps text-outline-variant">MAG: 0.42</p>
+</div>
+</div>
+</div>
+<!-- Card 2: Normal -->
+<div class="group bg-surface-container p-md rounded-xl border border-outline-variant/10 hover:border-primary/30 transition-all active:scale-[0.98]">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-block px-sm py-xs bg-primary/10 text-primary rounded font-label-caps text-[10px] border border-primary/20">NORMAL</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-sm">SW420-B2</h3>
+</div>
+<div class="text-right">
+<p class="font-data-md text-data-md text-on-surface-variant">13:55:04</p>
+<p class="text-[10px] font-label-caps text-outline-variant">STABLE</p>
+</div>
+</div>
+</div>
+<!-- Card 3: Normal -->
+<div class="group bg-surface-container p-md rounded-xl border border-outline-variant/10 opacity-60">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="inline-block px-sm py-xs bg-primary/10 text-primary rounded font-label-caps text-[10px] border border-primary/20">NORMAL</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-sm">SW420-X9</h3>
+</div>
+<div class="text-right">
+<p class="font-data-md text-data-md text-on-surface-variant">12:10:55</p>
+<p class="text-[10px] font-label-caps text-outline-variant">STABLE</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Specs / Chips -->
+<section class="grid grid-cols-2 gap-sm">
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/20 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-on-secondary-container mb-xs">thermostat</span>
+<span class="font-label-caps text-[10px] text-outline-variant">SYSTEM TEMP</span>
+<span class="font-data-lg text-data-lg text-on-surface">32.4°C</span>
+</div>
+<div class="bg-surface-container-low p-md rounded-xl border border-outline-variant/20 flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-on-secondary-container mb-xs">database</span>
+<span class="font-label-caps text-[10px] text-outline-variant">STORAGE</span>
+<span class="font-data-lg text-data-lg text-on-surface">88%</span>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container dark:bg-surface-container border-t border-outline-variant/20 flex justify-around items-center h-16 px-margin-mobile w-full">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center text-primary bg-primary/10 rounded-xl px-4 py-1 active:translate-y-0.5 transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-[10px] uppercase mt-1">Dashboard</span>
+</a>
+<!-- History -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary/80 active:translate-y-0.5 transition-all" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-[10px] uppercase mt-1">History</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary/80 active:translate-y-0.5 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-[10px] uppercase mt-1">Settings</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for cards
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.classList.add('scale-[0.98]');
+            });
+            card.addEventListener('touchend', () => {
+                card.classList.remove('scale-[0.98]');
+            });
+        });
+    </script>
+</body></html>

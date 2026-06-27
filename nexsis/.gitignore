@@ -43,3 +43,7 @@ yarn-error.*
 # Firebase Keys
 *firebase-key.json
 nexsis-68baa-firebase-adminsdk-fbsvc-d10f373e90.json
+nexsis-da1b2-firebase-adminsdk-fbsvc-c9f83bb248.json
+
+# Stitch MCP cache
+stitch_*.json

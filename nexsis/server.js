@@ -10,17 +10,23 @@ const FCM_TOPIC = 'nexsis-alerts';
 
 // 1. Initialize Firebase Admin SDK
 let messaging = null;
-try {
-  const serviceAccount = require('./firebase-key.json');
-  const firebaseApp = initializeApp({
-    credential: cert(serviceAccount)
-  });
-  messaging = getMessaging(firebaseApp);
-  console.log('Firebase Admin SDK initialized successfully.');
-} catch (error) {
-  console.error('CRITICAL: Failed to load firebase-key.json or initialize Firebase Admin SDK.');
-  console.error('Please make sure firebase-key.json is present in the server root.');
-  console.error(error);
+const firebaseKey = process.env.FIREBASE_KEY
+  ? JSON.parse(process.env.FIREBASE_KEY)
+  : null;
+
+if (firebaseKey) {
+  try {
+    const firebaseApp = initializeApp({
+      credential: cert(firebaseKey)
+    });
+    messaging = getMessaging(firebaseApp);
+    console.log('Firebase Admin SDK initialized successfully.');
+  } catch (error) {
+    console.error('CRITICAL: Failed to initialize Firebase Admin SDK.');
+    console.error(error);
+  }
+} else {
+  console.warn('WARNING: FIREBASE_KEY env var not set. FCM push notifications will be disabled.');
 }
 
 const app = express();
