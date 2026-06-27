@@ -10,9 +10,16 @@ const FCM_TOPIC = 'nexsis-alerts';
 
 // 1. Initialize Firebase Admin SDK
 let messaging = null;
-const firebaseKey = process.env.FIREBASE_KEY
-  ? JSON.parse(process.env.FIREBASE_KEY)
-  : null;
+let firebaseKey = null;
+
+if (process.env.FIREBASE_KEY) {
+  try {
+    firebaseKey = JSON.parse(process.env.FIREBASE_KEY);
+  } catch (parseError) {
+    console.error('CRITICAL: Failed to parse FIREBASE_KEY environment variable as JSON.');
+    console.error(parseError);
+  }
+}
 
 if (firebaseKey) {
   try {
@@ -26,7 +33,7 @@ if (firebaseKey) {
     console.error(error);
   }
 } else {
-  console.warn('WARNING: FIREBASE_KEY env var not set. FCM push notifications will be disabled.');
+  console.warn('WARNING: FIREBASE_KEY env var not set or invalid. FCM push notifications will be disabled.');
 }
 
 const app = express();
