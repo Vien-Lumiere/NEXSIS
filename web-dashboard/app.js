@@ -342,6 +342,14 @@ window.addEventListener('resize', () => {
   resizeCanvas();
 });
 
+// ─── FCM PUSH BRIDGE ──────────────────────────────────────────────────────────
+// firebase.js dispatches this custom event when a foreground FCM push arrives.
+window.addEventListener('nexsis:earthquake', (e) => {
+  const event = e.detail;
+  addEventToTable(event);
+  triggerAlarm(event);
+});
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 resizeCanvas();
 requestAnimationFrame(drawWaveform);

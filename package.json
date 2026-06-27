@@ -23,7 +23,9 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "webpack": "^5.108.1",
+    "webpack-cli": "^7.1.0"
   },
   "scripts": {
     "start": "expo start",

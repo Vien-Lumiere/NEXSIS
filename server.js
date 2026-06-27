@@ -19,6 +19,29 @@ if (process.env.FIREBASE_KEY) {
     console.error('CRITICAL: Failed to parse FIREBASE_KEY environment variable as JSON.');
     console.error(parseError);
   }
+} else {
+  const fs = require('fs');
+  const potentialPaths = [
+    path.join(__dirname, 'firebase-key.json'),
+    path.join(__dirname, 'nexsis-da1b2-firebase-adminsdk-fbsvc-c9f83bb248.json'),
+    path.join(__dirname, 'nexsis-68baa-firebase-adminsdk-fbsvc-d10f373e90.json')
+  ];
+
+  for (const keyPath of potentialPaths) {
+    if (fs.existsSync(keyPath)) {
+      try {
+        const fileContent = fs.readFileSync(keyPath, 'utf8');
+        // Handle files containing multiple JSON objects (like appended device mock payloads)
+        // by taking only the first valid JSON block
+        const cleanContent = fileContent.trim().split(/\n\s*\n|\n(?={)/)[0];
+        firebaseKey = JSON.parse(cleanContent);
+        console.log(`Successfully loaded Firebase credential key from ${path.basename(keyPath)}.`);
+        break;
+      } catch (err) {
+        console.warn(`Attempted to load key from ${path.basename(keyPath)} but failed:`, err.message);
+      }
+    }
+  }
 }
 
 if (firebaseKey) {
@@ -33,7 +56,7 @@ if (firebaseKey) {
     console.error(error);
   }
 } else {
-  console.warn('WARNING: FIREBASE_KEY env var not set or invalid. FCM push notifications will be disabled.');
+  console.warn('WARNING: Firebase credentials not found (env or local). FCM push notifications will be disabled.');
 }
 
 const app = express();
