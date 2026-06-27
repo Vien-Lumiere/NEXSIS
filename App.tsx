@@ -5,11 +5,12 @@ import { JetBrainsMono_400Regular, JetBrainsMono_700Bold } from '@expo-google-fo
 import { AppProvider } from './app/context/AppContext';
 import { DashboardScreen } from './app/screens/DashboardScreen';
 import { SettingsScreen } from './app/screens/SettingsScreen';
+import { SafetyScreen } from './app/screens/SafetyScreen';
 import { setupNotificationHandler, registerForPushNotificationsAsync } from './app/services/notifications';
 import { theme } from './app/config/theme';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<'dashboard' | 'settings'>('dashboard');
+  const [currentScreen, setCurrentScreen] = useState<'dashboard' | 'settings' | 'safety'>('dashboard');
 
   // Load custom premium fonts
   const [fontsLoaded] = useFonts({
@@ -39,9 +40,14 @@ export default function App() {
     <AppProvider>
       <View style={styles.container}>
         {currentScreen === 'dashboard' ? (
-          <DashboardScreen onOpenSettings={() => setCurrentScreen('settings')} />
-        ) : (
+          <DashboardScreen
+            onOpenSettings={() => setCurrentScreen('settings')}
+            onOpenSafety={() => setCurrentScreen('safety')}
+          />
+        ) : currentScreen === 'settings' ? (
           <SettingsScreen onClose={() => setCurrentScreen('dashboard')} />
+        ) : (
+          <SafetyScreen onClose={() => setCurrentScreen('dashboard')} />
         )}
       </View>
     </AppProvider>

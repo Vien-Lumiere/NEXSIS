@@ -1,18 +1,19 @@
 import React from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar } from 'react-native';
+import { View, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar, Text } from 'react-native';
 import { StatusIndicator } from '../components/StatusIndicator';
 import { WaveformTrace } from '../components/WaveformTrace';
 import { HistoryList } from '../components/HistoryList';
 import { AlertCard } from '../components/AlertCard';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { theme } from '../config/theme';
-import { Settings } from 'lucide-react-native';
+import { Settings, ShieldAlert } from 'lucide-react-native';
 
 interface DashboardScreenProps {
   onOpenSettings: () => void;
+  onOpenSafety: () => void;
 }
 
-export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenSettings }) => {
+export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenSettings, onOpenSafety }) => {
   // Initialize the WebSocket connection via hook
   useWebSocket();
 
@@ -25,6 +26,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ onOpenSettings
         <View style={styles.statusWrapper}>
           <StatusIndicator />
         </View>
+
+        {/* Safety Guide Button */}
+        <TouchableOpacity
+          style={styles.safetyButton}
+          onPress={onOpenSafety}
+          activeOpacity={0.7}
+          accessibilityLabel="Panduan Keselamatan Gempa"
+        >
+          <ShieldAlert color={theme.colors.accentAlert} size={16} />
+          <Text style={styles.safetyButtonText}>PANDUAN</Text>
+        </TouchableOpacity>
+
+        {/* Settings Button */}
         <TouchableOpacity 
           style={styles.settingsButton} 
           onPress={onOpenSettings}
@@ -64,6 +78,24 @@ const styles = StyleSheet.create({
   statusWrapper: {
     flex: 1,
   },
+  safetyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: theme.spacing.sm,
+    paddingVertical: 6,
+    borderRadius: theme.borderRadius.md,
+    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 107, 53, 0.25)',
+    marginRight: theme.spacing.sm,
+  },
+  safetyButtonText: {
+    fontFamily: theme.fonts.mono,
+    fontSize: 9,
+    color: theme.colors.accentAlert,
+    letterSpacing: 1.0,
+  },
   settingsButton: {
     width: 48,
     height: 48,
@@ -77,3 +109,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
