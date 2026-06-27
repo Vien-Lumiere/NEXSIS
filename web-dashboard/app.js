@@ -2,7 +2,11 @@
 'use strict';
 
 // ─── CONFIGURATION ──────────────────────────────────────────────────────────
-let WS_URL = localStorage.getItem('nexsis_ws_url') || 'ws://localhost:5000';
+let defaultWsUrl = 'ws://localhost:5000';
+if (window.location.protocol && window.location.protocol.startsWith('http')) {
+  defaultWsUrl = `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`;
+}
+let WS_URL = localStorage.getItem('nexsis_ws_url') || defaultWsUrl;
 const API_BASE = () => WS_URL.replace('ws://', 'http://').replace('wss://', 'https://');
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
