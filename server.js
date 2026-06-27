@@ -32,6 +32,10 @@ if (firebaseKey) {
 const app = express();
 app.use(express.json());
 
+// Serve static assets for the dashboards
+app.use(express.static(path.join(__dirname, 'web-dashboard')));
+app.use('/mobile', express.static(path.join(__dirname, 'mobile-ui')));
+
 // Enable CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
