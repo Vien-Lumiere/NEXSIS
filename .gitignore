@@ -54,4 +54,6 @@ projectUGM
 
 # Agent skills (local tooling only)
 .agents/
-.claude/skills/
+.claude/
+.agent
+.claude
